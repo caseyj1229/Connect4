@@ -1,3 +1,5 @@
+import java.awt.*;
+
 public class Player {
     final int playerKey;
     final PlayerColor playerColor;
@@ -29,13 +31,13 @@ public class Player {
             }
 
             @Override
-            public boolean isBlack() {
-                return false;
+            public int getPlayerKey() {
+                return 2;
             }
 
             @Override
-            public int getPlayerKey() {
-                return 2;
+            public Color getPlayerColor() {
+                return Color.RED;
             }
         },
         BLACK {
@@ -45,18 +47,18 @@ public class Player {
             }
 
             @Override
-            public boolean isBlack() {
-                return true;
+            public int getPlayerKey() {
+                return 1;
             }
 
             @Override
-            public int getPlayerKey() {
-                return 1;
+            public Color getPlayerColor() {
+                return Color.BLACK;
             }
         };
 
         public abstract boolean isRed();
-        public abstract boolean isBlack();
         public abstract int getPlayerKey();
+        public abstract Color getPlayerColor();
     }
 }

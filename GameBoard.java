@@ -1,62 +1,59 @@
-public class GameBoard{
-    public int[][] board;
-    public Player redPlayer;
-    public Player blackPlayer;
-    public Player currentPlayer;
+class GameBoard{
+    private static int[][] board;
+    private static Player redPlayer;
+    private static Player blackPlayer;
+    static Player currentPlayer;
 
-    public static final int rows = 6;
-    public static final int cols = 7;
-    public static final int winCon = 4;
-    public static final int numTiles = 42;
+    static final int rows = 6;
+    static final int cols = 7;
+    private static final int winCon = 4;
 
-    GameBoard(final int[][] board){
-        this.board = board;
-        this.redPlayer = new Player(2, Player.PlayerColor.RED);
-        this.blackPlayer = new Player(1, Player.PlayerColor.BLACK);
-        this.currentPlayer = redPlayer;
+    static int[] row = new int[cols];
+
+    private GameBoard(final int[][] board){
+        GameBoard.board = board;
+        redPlayer = new Player(2, Player.PlayerColor.RED);
+        blackPlayer = new Player(1, Player.PlayerColor.BLACK);
+        currentPlayer = redPlayer;
     }
 
-    public static GameBoard createNewBoard() {
+    static GameBoard createNewBoard() {
         int[][] newBoard = new int[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 newBoard[i][j] = 0;
             }
         }
+        for(int i = 0; i<row.length;i++){
+            row[i] = 5;
+        }
         return new GameBoard(newBoard);
     }
 
-    public static void printBoard(GameBoard gameBoard){
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                System.out.print(gameBoard.board[i][j] + "  ");
-            }
-            System.out.println("");
-        }
-    }
-
-    public void makeMove(){
-
-    }
-
-    public Player.PlayerColor getPlayerColor(Player player){
-        return player.playerColor;
-    }
-
-    public Player getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public void setCurrentPlayer(){
-        if(this.currentPlayer.playerColor.isRed()){
-            this.currentPlayer = blackPlayer;
+    static void makeMove(final int rowID, final int colID, final Player.PlayerColor playerColor){
+        GameGUI.tilePanels[rowID][colID].changeColor(rowID,colID,playerColor);
+        board[rowID][colID] = currentPlayer.playerKey;
+        if(checkForWin(rowID,colID,currentPlayer)){
+            //GAME IS OVER
+            System.out.println("CONGRATULATIONS! " + currentPlayer.toString() + " PLAYER IS THE WINNER");
+            System.exit(0);
         }
         else{
-            this.currentPlayer = redPlayer;
+            row[colID]--;
+            setCurrentPlayer();
         }
     }
 
-    public boolean checkForWin(int row, int col, Player player){
+    private static void setCurrentPlayer(){
+        if(currentPlayer.playerColor.isRed()){
+            currentPlayer = GameBoard.blackPlayer;
+        }
+        else{
+            currentPlayer = GameBoard.redPlayer;
+        }
+    }
+
+    private static boolean checkForWin(int row, int col, Player player){
         int count = 0;
         //Check Horizontal
         for(int i = 0; i < cols; i++){
@@ -89,7 +86,7 @@ public class GameBoard{
                 if (board[i][j] == player.playerColor.getPlayerKey() &&
                     board[i-1][j+1] == player.playerColor.getPlayerKey() &&
                     board[i-2][j+2] == player.playerColor.getPlayerKey() &&
-                    this.board[i-3][j+3] == player.playerColor.getPlayerKey()) {
+                    board[i-3][j+3] == player.playerColor.getPlayerKey()) {
                     return true;
                 }
             }
